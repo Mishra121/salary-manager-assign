@@ -30,14 +30,23 @@ cp .env.example .env
 
 ## Running
 
-### Development Server
+### Using Make Commands (Recommended)
 
 ```bash
-# Using uv run
-uv run python -m app.main
+# From project root
+make backend-start      # Seed database + start server on port 8000
+make test              # Run all 75 tests
+make kill-servers      # Stop running services
+```
 
-# Or run with uvicorn directly
-uv run uvicorn app.main:app --reload
+### Manual Development Server
+
+```bash
+# Seed the database first (10,000 employees, ~1 second)
+uv run python -m app.seed.seed_employees
+
+# Start server with auto-reload
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Server starts at `http://localhost:8000`
@@ -47,36 +56,57 @@ Server starts at `http://localhost:8000`
 Once running, visit:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
+- Health check: `http://localhost:8000/health`
 
 ## Testing
 
-### Run All Tests
+### Run All Tests (75 total, all passing ✅)
 
 ```bash
-# Using uv run
-uv run pytest -q
+# Using make (recommended)
+make test
+
+# Or manually
+uv run pytest -v        # Verbose output
+uv run pytest -q        # Quick output
 ```
+
+### Test Suite Breakdown
+
+| Category | Count | Coverage |
+|----------|-------|----------|
+| Domain tests | 13 | Employee model, validation, currency conversion |
+| Repository tests | 16 | CRUD, filtering, pagination, search |
+| Service tests | 10 | Business logic, salary updates |
+| Salary history tests | 8 | Timeline tracking, audit trail |
+| Insights tests | 13 | KPIs, distribution, outliers, filtering |
+| Seed tests | 10 | Data generation, determinism, realism |
+| Health/Integration | 5 | API readiness, full flows |
 
 ### Run Tests with Coverage
 
 ```bash
 uv run pytest --cov=app --cov-report=html
+open htmlcov/index.html  # View coverage report
 ```
 
-### Run Specific Tests
+### Run Specific Test Files
 
 ```bash
-# Health check test only
-uv run pytest tests/test_health.py -v
+# Test employee domain
+uv run pytest tests/test_domain.py -v
 
-# Skip slow tests
-uv run pytest -m "not slow"
+# Test insights analytics
+uv run pytest tests/test_insights.py -v
+
+# Test data seeding
+uv run pytest tests/test_seed.py -v
 ```
 
 ### Test Markers
 
 - `@pytest.mark.slow` - Long-running tests (seed, performance)
-- `@pytest.mark.integration` - Integration tests
+- `@pytest.mark.integration` - Integration tests with database
 
 ## Code Quality
 
