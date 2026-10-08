@@ -144,3 +144,51 @@ class InsightsResponse(BaseModel):
     by_job_title: list[SalaryByJobTitle]
     distribution: list[SalaryDistributionBucket]
     outliers: list[SalaryOutlier]
+
+
+class SalaryHistoryRecord(BaseModel):
+    """Salary history record for an employee."""
+
+    id: int
+    employee_id: int
+    old_salary: Optional[Decimal] = None
+    new_salary: Decimal
+    currency: str
+    effective_date: date
+    reason: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class SalaryHistoryTimeline(BaseModel):
+    """Salary change timeline entry with full record data."""
+
+    id: int
+    employee_id: int
+    old_salary: Optional[Decimal] = None
+    new_salary: Decimal
+    currency: str
+    effective_date: date
+    reason: Optional[str] = None
+    change_percentage: Optional[float] = None
+
+
+class SalaryHistoryResponse(BaseModel):
+    """Complete salary history for an employee."""
+
+    employee_id: int
+    current_salary: Decimal
+    total_raise_percentage: float
+    history_count: int
+    timeline: list[SalaryHistoryTimeline]
+
+
+class RecordSalaryChangeRequest(BaseModel):
+    """Request to record a salary change."""
+
+    old_salary: Optional[Decimal] = None
+    new_salary: Decimal = Field(..., gt=0, decimal_places=2)
+    currency: str = Field(default="USD", min_length=3, max_length=3)
+    effective_date: date
+    reason: Optional[str] = Field(None, max_length=255)
