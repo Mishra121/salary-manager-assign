@@ -8,18 +8,18 @@ import re
 
 class EmploymentType(str, Enum):
     """Employment type enumeration."""
-    FULL_TIME = "full_time"
-    PART_TIME = "part_time"
-    CONTRACT = "contract"
-    INTERN = "intern"
+    FULL_TIME = "FULL_TIME"
+    PART_TIME = "PART_TIME"
+    CONTRACT = "CONTRACT"
+    INTERN = "INTERN"
 
 
 class EmployeeStatus(str, Enum):
     """Employee status enumeration."""
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    LEAVE = "leave"
-    TERMINATED = "terminated"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    LEAVE = "LEAVE"
+    TERMINATED = "TERMINATED"
 
 
 class Employee:

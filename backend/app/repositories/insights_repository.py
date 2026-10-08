@@ -220,11 +220,13 @@ class InsightsRepository:
             bucket_min = min_sal + (i * bucket_size)
             bucket_max = min_sal + ((i + 1) * bucket_size)
 
-            # Count employees in this bucket (exclude upper boundary except for last bucket)
-            count = sum(
-                1 for sal in salaries_usd
-                if bucket_min <= sal < bucket_max or (i == bucket_count - 1 and sal <= bucket_max)
-            )
+            # Count employees in this bucket
+            if i == bucket_count - 1:
+                # Last bucket: include upper boundary to catch any floating point edge cases
+                count = sum(1 for sal in salaries_usd if bucket_min <= sal <= bucket_max)
+            else:
+                # Other buckets: exclude upper boundary to avoid double-counting
+                count = sum(1 for sal in salaries_usd if bucket_min <= sal < bucket_max)
 
             buckets.append({
                 "min": float(round(bucket_min, 2)),

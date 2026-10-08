@@ -266,6 +266,91 @@ class TestSalaryDistribution:
         total_in_buckets = sum(b["count"] for b in distribution)
         assert total_in_buckets >= 7  # At least the 7 we added
 
+    def test_salary_distribution_bucket_counts_sum_correctly(self, db_session):
+        """Salary distribution buckets sum to total employees (not all in last bucket)."""
+        # Create employees with specific salaries to test bucketing logic
+        salaries = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]
+        for i, salary in enumerate(salaries):
+            emp = EmployeeModel(
+                name=f"Employee {i}",
+                email=f"emp{i}@acme.com",
+                job_title="Engineer",
+                department="Engineering",
+                country="US",
+                hire_date=date(2023, 1, 1),
+                salary=Decimal(str(salary)),
+                currency="USD",
+            )
+            db_session.add(emp)
+        db_session.commit()
+
+        repo = InsightsRepository(db_session)
+        service = InsightsService(repo)
+        distribution = service.get_salary_distribution(bucket_count=5)
+
+        # Verify bucket structure
+        assert len(distribution) == 5
+
+        # Verify each bucket has proper range
+        for i, bucket in enumerate(distribution):
+            assert bucket["min"] < bucket["max"], f"Bucket {i}: min >= max"
+            assert bucket["count"] >= 0, f"Bucket {i}: negative count"
+
+        # CRITICAL: Sum of all bucket counts should equal total employees
+        # This test catches the bug where all employees were counted in the last bucket
+        total_in_buckets = sum(b["count"] for b in distribution)
+        assert total_in_buckets == 10, f"Expected 10 employees total, got {total_in_buckets}. Bug: employees not distributed correctly across buckets."
+
+        # Verify not all employees are in last bucket
+        last_bucket_count = distribution[-1]["count"]
+        assert last_bucket_count < 10, f"All {last_bucket_count} employees in last bucket - distribution bug!"
+
+        # Verify first buckets have employees
+        first_bucket_count = distribution[0]["count"]
+        assert first_bucket_count > 0, "First bucket empty - employees not distributed!"
+
+    def test_salary_distribution_edges(self, db_session):
+        """Salary distribution handles edge cases (min/max values)."""
+        # Add employees: some at min, some at max, some in middle
+        min_salary = Decimal("10000")
+        max_salary = Decimal("100000")
+
+        emp_min = EmployeeModel(
+            name="Low Paid",
+            email="low@acme.com",
+            job_title="Junior",
+            department="Engineering",
+            country="US",
+            hire_date=date(2023, 1, 1),
+            salary=min_salary,
+            currency="USD",
+        )
+        emp_max = EmployeeModel(
+            name="High Paid",
+            email="high@acme.com",
+            job_title="Senior",
+            department="Engineering",
+            country="US",
+            hire_date=date(2023, 1, 1),
+            salary=max_salary,
+            currency="USD",
+        )
+        db_session.add_all([emp_min, emp_max])
+        db_session.commit()
+
+        repo = InsightsRepository(db_session)
+        service = InsightsService(repo)
+        distribution = service.get_salary_distribution(bucket_count=5)
+
+        # Both employees should be counted
+        total_in_buckets = sum(b["count"] for b in distribution)
+        assert total_in_buckets == 2, "Edge case: min/max salary employees not counted"
+
+        # First bucket should contain min_salary
+        assert distribution[0]["min"] <= float(min_salary)
+        # Last bucket should contain max_salary
+        assert distribution[-1]["max"] >= float(max_salary)
+
 
 class TestOutlierDetection:
     """Test outlier detection for pay equity analysis."""
