@@ -9,6 +9,7 @@ A web-based salary management platform for HR managers to centralize employee sa
 ### Prerequisites
 - Python 3.11+
 - Node.js 18+
+- [uv](https://github.com/astral-sh/uv) - Fast Python package manager
 - Docker & Docker Compose (optional, for Postgres)
 
 ### Local Development
@@ -16,11 +17,9 @@ A web-based salary management platform for HR managers to centralize employee sa
 #### Backend
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -e .
-pytest -q  # Run tests
-python -m app.main  # Start dev server on http://localhost:8000
+uv sync  # Install dependencies (includes dev tools)
+uv run pytest -q  # Run tests
+uv run python -m app.main  # Start dev server on http://localhost:8000
 ```
 
 #### Frontend
