@@ -54,17 +54,17 @@ export default function InsightsDashboardPage() {
     },
   ];
 
-  const byCountry = insights.by_country.map((item) => ({
+  const byCountry = (insights.by_country || []).map((item) => ({
     ...item,
     avg_salary_usd: Math.round(typeof item.avg_salary_usd === 'string' ? parseFloat(item.avg_salary_usd) : item.avg_salary_usd),
   }));
 
-  const byDepartment = insights.by_department.map((item) => ({
+  const byDepartment = (insights.by_department || []).map((item) => ({
     ...item,
     avg_salary_usd: Math.round(typeof item.avg_salary_usd === 'string' ? parseFloat(item.avg_salary_usd) : item.avg_salary_usd),
   }));
 
-  const byTitle = insights.by_job_title.map((item) => ({
+  const byTitle = (insights.by_job_title || []).map((item) => ({
     ...item,
     avg_salary_usd: Math.round(typeof item.avg_salary_usd === 'string' ? parseFloat(item.avg_salary_usd) : item.avg_salary_usd),
   }));
@@ -200,7 +200,7 @@ export default function InsightsDashboardPage() {
           <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
-                data={insights.distribution}
+                data={insights.distribution || []}
                 dataKey="count"
                 nameKey="bracket"
                 cx="50%"
@@ -208,7 +208,7 @@ export default function InsightsDashboardPage() {
                 outerRadius={100}
                 label={({ value }: { value: number }) => `${value}`}
               >
-                {insights.distribution.map((_: any, index: number) => (
+                {(insights.distribution || []).map((_: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -255,7 +255,7 @@ export default function InsightsDashboardPage() {
           <h2>🎯 Salary Outliers</h2>
           <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Employees with salary {'>'} 2 SD from title average</p>
         </div>
-        {insights.outliers.length > 0 ? (
+        {(insights.outliers || []).length > 0 ? (
           <div className="table-container">
             <table className="table">
               <thead>
@@ -268,7 +268,7 @@ export default function InsightsDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {insights.outliers.map((outlier) => {
+                {(insights.outliers || []).map((outlier) => {
                   const salaryUsd = typeof outlier.salary_usd === 'string' ? parseFloat(outlier.salary_usd) : outlier.salary_usd;
                   const titleAvgUsd = typeof outlier.avg_for_title_usd === 'string' ? parseFloat(outlier.avg_for_title_usd) : outlier.avg_for_title_usd;
                   const deviationFromAvg = typeof outlier.deviation_from_avg === 'string' ? parseFloat(outlier.deviation_from_avg) : outlier.deviation_from_avg;
