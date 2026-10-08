@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine
 from app.models import Base
-from app.api import employees
+from app.api import employees, insights
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -37,6 +37,10 @@ def health_check() -> dict:
 # Include API routes
 app.include_router(
     employees.router,
+    prefix=settings.api_prefix,
+)
+app.include_router(
+    insights.router,
     prefix=settings.api_prefix,
 )
 

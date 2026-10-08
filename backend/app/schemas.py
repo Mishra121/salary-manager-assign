@@ -72,3 +72,75 @@ class ListQueryParams(BaseModel):
     country: Optional[str] = Field(None, description="Filter by country")
     department: Optional[str] = Field(None, description="Filter by department")
     job_title: Optional[str] = Field(None, description="Filter by job title")
+
+
+class HeadlineKPIs(BaseModel):
+    """Headline key performance indicators."""
+
+    headcount: int = Field(..., description="Total number of employees")
+    total_payroll_usd: Decimal = Field(..., description="Total payroll in USD")
+    average_salary_usd: Decimal = Field(..., description="Average salary in USD")
+    median_salary_usd: Decimal = Field(..., description="Median salary in USD")
+    min_salary_usd: Decimal = Field(..., description="Minimum salary in USD")
+    max_salary_usd: Decimal = Field(..., description="Maximum salary in USD")
+
+
+class SalaryStatsByDimension(BaseModel):
+    """Salary statistics for a dimension (country, department, or job title)."""
+
+    count: int = Field(..., description="Number of employees")
+    min_salary_usd: Decimal = Field(..., description="Minimum salary in USD")
+    avg_salary_usd: Decimal = Field(..., description="Average salary in USD")
+    median_salary_usd: Decimal = Field(..., description="Median salary in USD")
+    max_salary_usd: Decimal = Field(..., description="Maximum salary in USD")
+
+
+class SalaryByCountry(SalaryStatsByDimension):
+    """Salary stats by country."""
+
+    country: str = Field(..., description="Country code")
+
+
+class SalaryByDepartment(SalaryStatsByDimension):
+    """Salary stats by department."""
+
+    department: str = Field(..., description="Department name")
+
+
+class SalaryByJobTitle(SalaryStatsByDimension):
+    """Salary stats by job title."""
+
+    job_title: str = Field(..., description="Job title")
+
+
+class SalaryDistributionBucket(BaseModel):
+    """One bucket in salary distribution histogram."""
+
+    min: float = Field(..., description="Bucket minimum salary (USD)")
+    max: float = Field(..., description="Bucket maximum salary (USD)")
+    count: int = Field(..., description="Number of employees in bucket")
+
+
+class SalaryOutlier(BaseModel):
+    """Outlier employee with salary context."""
+
+    id: int = Field(..., description="Employee ID")
+    name: str = Field(..., description="Employee name")
+    email: str = Field(..., description="Employee email")
+    job_title: str = Field(..., description="Job title")
+    department: str = Field(..., description="Department")
+    country: str = Field(..., description="Country code")
+    salary_usd: Decimal = Field(..., description="Salary in USD")
+    title_median_salary_usd: Decimal = Field(..., description="Median salary for this title")
+    deviation_from_median: float = Field(..., description="Percentage deviation from title median")
+
+
+class InsightsResponse(BaseModel):
+    """Complete insights dashboard response."""
+
+    headline: HeadlineKPIs
+    by_country: list[SalaryByCountry]
+    by_department: list[SalaryByDepartment]
+    by_job_title: list[SalaryByJobTitle]
+    distribution: list[SalaryDistributionBucket]
+    outliers: list[SalaryOutlier]
