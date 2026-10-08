@@ -126,17 +126,16 @@ backend/
 └── README.md                # This file
 ```
 
-## Database Migrations
+## Database Setup
+
+The application uses SQLAlchemy ORM with automatic table creation on startup.
 
 ```bash
-# Generate a new migration
-uv run alembic revision --autogenerate -m "add table"
+# Tables are created automatically when the app starts
+# See app/main.py: Base.metadata.create_all(bind=engine)
 
-# Apply migrations
-uv run alembic upgrade head
-
-# Rollback one migration
-uv run alembic downgrade -1
+# For development: uses SQLite (salary_management.db)
+# For production: configure DATABASE_URL to Postgres connection string
 ```
 
 ## Development Workflow

@@ -202,11 +202,10 @@ def generate_employees(
     return employees
 
 
-if __name__ == "__main__":
+def main() -> None:
     """Seed script runner."""
     import time
     from app.database import SessionLocal
-    from app.repositories.employee_repository import EmployeeRepository
     from app.models import EmployeeModel
 
     print("🌱 Starting employee seeding...")
@@ -256,3 +255,7 @@ if __name__ == "__main__":
 
     finally:
         db.close()
+
+
+if __name__ == "__main__":
+    main()

@@ -32,7 +32,7 @@ npm run dev  # Start dev server on http://localhost:5173
 #### Seed Database
 ```bash
 cd backend
-python -m app.seed  # Seeds 10,000 employees into the database
+uv run python -m app.seed  # Seeds 10,000 employees into the database
 ```
 
 ### Docker
