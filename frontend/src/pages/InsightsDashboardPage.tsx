@@ -42,7 +42,7 @@ export default function InsightsDashboardPage() {
     },
     {
       label: 'Avg Salary (USD)',
-      value: formatCurrency(insights.headline.average_salary_usd),
+      value: formatCurrency(insights.headline.avg_salary_usd),
       icon: TrendingUp,
       color: '#f59e0b',
     },
@@ -200,15 +200,15 @@ export default function InsightsDashboardPage() {
           <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
-                data={insights.distribution}
+                data={insights.salary_distribution}
                 dataKey="count"
                 nameKey="bracket"
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                label={({ value }) => `${value}`}
+                label={({ value }: { value: number }) => `${value}`}
               >
-                {insights.distribution.map((_, index) => (
+                {insights.salary_distribution.map((_: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -263,15 +263,15 @@ export default function InsightsDashboardPage() {
                   <th>Name</th>
                   <th>Job Title</th>
                   <th>Salary (USD)</th>
-                  <th>Title Median (USD)</th>
+                  <th>Title Avg (USD)</th>
                   <th>Deviation</th>
                 </tr>
               </thead>
               <tbody>
                 {insights.outliers.map((outlier) => {
                   const salaryUsd = typeof outlier.salary_usd === 'string' ? parseFloat(outlier.salary_usd) : outlier.salary_usd;
-                  const titleMedianUsd = typeof outlier.title_median_salary_usd === 'string' ? parseFloat(outlier.title_median_salary_usd) : outlier.title_median_salary_usd;
-                  const deviationFromMedian = typeof outlier.deviation_from_median === 'string' ? parseFloat(outlier.deviation_from_median) : outlier.deviation_from_median;
+                  const titleAvgUsd = typeof outlier.avg_for_title_usd === 'string' ? parseFloat(outlier.avg_for_title_usd) : outlier.avg_for_title_usd;
+                  const deviationFromAvg = typeof outlier.deviation_from_avg === 'string' ? parseFloat(outlier.deviation_from_avg) : outlier.deviation_from_avg;
                   return (
                     <tr key={outlier.id}>
                       <td>
@@ -279,17 +279,17 @@ export default function InsightsDashboardPage() {
                       </td>
                       <td>{outlier.job_title}</td>
                       <td>{formatCurrency(salaryUsd)}</td>
-                      <td>{formatCurrency(titleMedianUsd)}</td>
+                      <td>{formatCurrency(titleAvgUsd)}</td>
                       <td>
                         <span
                           className={`badge ${
-                            deviationFromMedian > 0
+                            deviationFromAvg > 0
                               ? 'badge-success'
                               : 'badge-danger'
                           }`}
                         >
-                          {deviationFromMedian > 0 ? '+' : ''}
-                          {deviationFromMedian.toFixed(1)}%
+                          {deviationFromAvg > 0 ? '+' : ''}
+                          {deviationFromAvg.toFixed(1)}%
                         </span>
                       </td>
                     </tr>
