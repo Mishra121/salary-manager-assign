@@ -42,7 +42,7 @@ export default function InsightsDashboardPage() {
     },
     {
       label: 'Avg Salary (USD)',
-      value: formatCurrency(insights.headline.avg_salary_usd),
+      value: formatCurrency(insights.headline.average_salary_usd),
       icon: TrendingUp,
       color: '#f59e0b',
     },

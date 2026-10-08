@@ -38,11 +38,11 @@ export interface ListEmployeesResponse {
 export interface InsightsResponse {
   headline: {
     headcount: number;
-    total_payroll_usd: number;
-    avg_salary_usd: number;
-    median_salary_usd: number;
-    min_salary_usd: number;
-    max_salary_usd: number;
+    total_payroll_usd: number | string;
+    average_salary_usd: number | string;
+    median_salary_usd: number | string;
+    min_salary_usd: number | string;
+    max_salary_usd: number | string;
   };
   by_country: Array<{
     country: string;
