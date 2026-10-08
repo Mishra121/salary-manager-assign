@@ -60,11 +60,11 @@ export interface InsightsResponse {
   }>;
   by_job_title: Array<{
     job_title: string;
-    headcount: number;
+    count: number;
     avg_salary_usd: number;
     median_salary_usd: number;
   }>;
-  salary_distribution: Array<{
+  distribution: Array<{
     bracket: string;
     count: number;
   }>;

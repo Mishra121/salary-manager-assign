@@ -200,7 +200,7 @@ export default function InsightsDashboardPage() {
           <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
-                data={insights.salary_distribution}
+                data={insights.distribution}
                 dataKey="count"
                 nameKey="bracket"
                 cx="50%"
@@ -208,7 +208,7 @@ export default function InsightsDashboardPage() {
                 outerRadius={100}
                 label={({ value }: { value: number }) => `${value}`}
               >
-                {insights.salary_distribution.map((_: any, index: number) => (
+                {insights.distribution.map((_: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
