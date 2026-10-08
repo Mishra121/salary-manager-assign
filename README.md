@@ -207,20 +207,6 @@ docker-compose up --build
 
 ---
 
-## 📹 Demo & Walkthrough
-
-A complete walkthrough showing:
-- ✅ 10,000 employees seeded and indexed
-- ✅ Employee list with search/filter/pagination
-- ✅ Create/edit employee with validation
-- ✅ Salary history timeline
-- ✅ Insights dashboard with interactive charts
-- ✅ Outlier detection for pay equity
-- ✅ 75 passing backend tests
-- ✅ Professional React UI with responsive design
-
----
-
 ## 📚 Development Notes
 
 ### Git Workflow
