@@ -205,11 +205,14 @@ def generate_employees(
 def main() -> None:
     """Seed script runner."""
     import time
-    from app.database import SessionLocal
-    from app.models import EmployeeModel
+    from app.database import SessionLocal, engine
+    from app.models import Base, EmployeeModel
 
     print("🌱 Starting employee seeding...")
     start_time = time.time()
+
+    # Create tables if they don't exist
+    Base.metadata.create_all(bind=engine)
 
     # Generate seed data
     employees = generate_employees(count=10_000, seed=42)
